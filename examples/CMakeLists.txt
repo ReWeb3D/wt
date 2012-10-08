@@ -161,4 +161,22 @@ SUBDIRS(
   wt-homepage
   wtwithqt
   widgetgallery
+  webgl_lesson1
+  webgl_lesson2
+  webgl_lesson3
+  webgl_lesson3_client_side_anim
+  webgl_lesson3_WidgetSet
+  webgl_lesson4
+  webgl_lesson5
+  webgl_lesson6
+  webgl_lesson7
+  webgl_lesson8
+  webgl_lesson9
+  webgl_lesson10
+  webgl_lesson11
+  webgl_lesson12
+  webgl_lesson13
+  webgl_lesson14
+  webgl_lesson15
+  webgl_lesson16
 )

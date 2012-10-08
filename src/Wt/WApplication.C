@@ -1658,6 +1658,16 @@ void WApplication::loadJavaScript(const char *jsFile,
   }
 }
 
+// TG: I need this function to load additional unchanged JavaScript
+// TODO: Talk to Wt peple for advice
+void WApplication::loadJavaScript(const char *jsFile)
+{
+    if (!javaScriptLoaded(jsFile)) {
+        javaScriptLoaded_.insert(jsFile);
+        newJavaScriptToLoad_.push_back(jsFile);
+    }
+}
+
 void WApplication::streamJavaScriptPreamble(std::ostream& out, bool all)
 {
   if (all)

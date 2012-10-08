@@ -15,8 +15,8 @@
 #include "Wt/WApplication"
 
 #ifndef WT_DEBUG_JS
-#include "js/WGLWidget.min.js"
-#include "js/WtGlMatrix.min.js"
+#include "js/WGLWidget/WGLWidget.min.js"
+#include "js/WGLWidget/WtGlMatrix.min.js"
 #endif
 
 using namespace Wt;
@@ -531,10 +531,21 @@ void WGLWidget::updateDom(DomElement &element, bool all)
     if (updatePaintGL_) {
       js_.str("");
       paintGL();
-      tmp << "o.paintGL=function(){\n"
+      // TG: cannot overwrite paint before update is executed
+      // therefore overwrite paintgl in a deferred function through the
+      // tasks queue
+      tmp << "var updatePaint = function(){\n";
+      tmp << "var obj=" << glObjJsRef() << ";\n";
+
+      tmp << "obj.paintGL=function(){\n"
         "var obj=" << glObjJsRef() << ";\n"
         "var ctx=obj.ctx;if (!ctx) return;\n"
         << js_.str() << "};";
+
+      tmp << "};\n";
+      tmp << "o.updates.push(updatePaint);";
+
+
     }
     js_.str("");
     // Make sure textures are loaded before we render
@@ -636,8 +647,19 @@ void WGLWidget::defineJavaScript()
 {
   WApplication *app = WApplication::instance();
 
-  LOAD_JAVASCRIPT(app, "js/WtGlMatrix.js", "glMatrix", wtjs2);
-  LOAD_JAVASCRIPT(app, "js/WGLWidget.js", "WGLWidget", wtjs1);
+  // TG: changed this because preprocessor messes somthing up now...
+  LOAD_JAVASCRIPT(app, "js/WGLWidget/WtGlMatrix.js", "glMatrix", wtjs2);
+  LOAD_JAVASCRIPT(app, "js/WGLWidget/WGLWidget.js", "WGLWidget", wtjs1);
+
+  // TG changes
+  // this directory needs to exist in the resources dir of the app
+  app->require("js/WGLWidget/osg.js");
+  app->require("js/WGLWidget/Matrix.js");
+  app->require("js/WGLWidget/Vec3.js");
+  app->require("js/WGLWidget/osgGA.js");
+  app->require("js/WGLWidget/Manipulator.js");
+  app->require("js/WGLWidget/FirstPersonManipulator.js");
+  app->require("js/WGLWidget/OrbitManipulator.js");
 }
 
 void WGLWidget::render(WFlags<RenderFlag> flags)
@@ -1285,6 +1307,30 @@ void WGLWidget::setClientSideLookAtHandler(const JavaScriptMatrix4x4 &m,
 //  } else {
 //    delayedJavaScript_ << ss.str();
 //  }
+}
+
+// TG
+void WGLWidget::setClientSideLookAtHandler(const JavaScriptMatrix4x4 &m,
+                                           double fromX, double fromY, double fromZ,
+                                           double toX, double toY, double toZ,
+                                           double upX, double upY, double upZ)
+{
+    //mouseWentDownSlot_.setJavaScript("function(o, e){" + glObjJsRef() + ".mouseDown(o, e);}");
+    //mouseWentUpSlot_.setJavaScript("function(o, e){" + glObjJsRef() + ".mouseUp(o, e);}");
+    //mouseDraggedSlot_.setJavaScript("function(o, e){" + glObjJsRef() + ".mouseDragLookAt(o, e);}");
+    //mouseWheelSlot_.setJavaScript("function(o, e){" + glObjJsRef() + ".mouseWheelLookAt(o, e);}");
+    js_ <<
+        "obj.setLookAtParams("
+        << m.jsRef()
+        << ",[" << fromX << "," << fromY << "," << fromZ << "]"
+        << ",[" << toX << "," << toY << "," << toZ << "]"
+        << ",[" << upX << "," << upY << "," << upZ << "]"
+        << ");";
+    //  if (this->isRendered()) {
+    //    doJavaScript(ss.str());
+    //  } else {
+    //    delayedJavaScript_ << ss.str();
+    //  }
 }
 
 void WGLWidget::setClientSideWalkHandler(const JavaScriptMatrix4x4 &m, double frontStep, double rotStep)

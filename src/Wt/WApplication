@@ -1807,6 +1807,8 @@ public:
    */
 #endif
   void loadJavaScript(const char *jsFile, const WJavaScriptPreamble& preamble);
+  // TG: I need this to load unchanged js files directly
+  void loadJavaScript(const char *jsFile);
 #endif
 
   bool javaScriptLoaded(const char *jsFile) const;
@@ -2134,6 +2136,8 @@ private:
 #ifndef WT_DEBUG_JS
   std::vector<WJavaScriptPreamble> javaScriptPreamble_;
   int newJavaScriptPreamble_;
+  // TG: needed to load custom js
+  std::vector<const char *> newJavaScriptToLoad_;
 #else
   std::vector<const char *> newJavaScriptToLoad_;
 #endif // WT_DEBUG_JS

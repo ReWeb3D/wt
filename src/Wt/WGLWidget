@@ -13,7 +13,7 @@
 namespace Wt {
 
 // define to enable WebGL debug code
-//#define WT_WGLWIDGET_DEBUG
+#define WT_WGLWIDGET_DEBUG
 
 #ifdef WT_WGLWIDGET_DEBUG
 #define GLDEBUG do {if (debugging_) {js_ << "\n{var err = ctx.getError(); if(err != ctx.NO_ERROR) {alert('error " << __FUNCTION__ << ": ' + err); debugger;}}\n";}} while(false)
@@ -819,6 +819,20 @@ public:
    */
   void blendFuncSeparate(GLenum srcRGB, GLenum dstRGB, 
                          GLenum srcAlpha, GLenum dstAlpha);
+
+   /*! \brief glBufferData - create and initialize a buffer object's data store
+   *
+   * Set the size of the currently bound WebGLBuffer object for the passed target.
+   * The buffer is initialized to 0.
+   * <a href="http://www.khronos.org/opengles/sdk/2.0/docs/man/glBufferData.xml">
+   * glBufferData() OpenGL ES manpage</a>
+   */
+  void bufferData(GLenum target, int size, GLenum usage) {
+    js_ << "ctx.bufferData(" << toString(target) << ",";
+    js_ << size << ",";
+    js_ << toString(usage) << ");";
+    GLDEBUG;
+  }
 
   /*! \brief GL function that loads float or double data in a VBO
    *
@@ -1979,6 +1993,13 @@ public:
                                   double uX, double uY, double uZ,
                                   double pitchRate, double yawRate);
 
+  // TG
+    void setClientSideLookAtHandler(const JavaScriptMatrix4x4 &m,
+                                  double fromX, double fromY, double fromZ,
+                                  double toX, double toY, double toZ,
+                                  double upX, double upY, double upZ);
+
+
   /*! \brief Add a mouse handler to the widget that allows 'walking' in
    * the scene
    *
@@ -2041,6 +2062,16 @@ public:
 #endif
   }
 
+    /*! \brief Inject JavaScript into the current js-stream.
+    *
+    * Careful: this method directly puts the given jsString into
+    * the JavaScript stream, whatever state it current has.
+    * For example, if called in initGL(), it will put the jsString
+    * into the client-side initGL() code.
+    */  
+    void injectJS(const std::string & jsString){js_ << jsString;}
+
+
 protected:
   DomElementType domElementType() const;
   DomElement *createDomElement(WApplication *app);
@@ -2049,6 +2080,9 @@ protected:
 
   void render(WFlags<RenderFlag> flags);
   std::string renderRemoveJs();
+
+  // TG: access in derived classes
+  std::stringstream js_;
 
 private:
   std::string glObjJsRef();
@@ -2088,7 +2122,7 @@ private:
   JSlot repaintSlot_;
 
   std::stringstream delayedJavaScript_;
-  std::stringstream js_;
+  
 
 #ifndef WT_TARGET_JAVA
   template<typename Iterator>
