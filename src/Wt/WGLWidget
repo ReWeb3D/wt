@@ -13,7 +13,7 @@
 namespace Wt {
 
 // define to enable WebGL debug code
-//#define WT_WGLWIDGET_DEBUG
+#define WT_WGLWIDGET_DEBUG
 
 #ifdef WT_WGLWIDGET_DEBUG
 #define GLDEBUG do {if (debugging_) {js_ << "\n{var err = ctx.getError(); if(err != ctx.NO_ERROR) {alert('error " << __FUNCTION__ << ": ' + err); debugger;}}\n";}} while(false)
@@ -1473,9 +1473,9 @@ public:
    * glUniform() OpenGL ES manpage</a>
    */
   template<typename Array>
-  void uniform1fv(const UniformLocation &location, const Array *value) {
+  void uniform1fv(const UniformLocation &location, int count, const Array *value) {
     js_ << "ctx.uniform1fv(" << location << ",";
-    renderfv(js_, value, value + 1);
+    renderfv(js_, value, value + count);
     js_ << ");";
     GLDEBUG;
   }
@@ -1500,9 +1500,9 @@ public:
    * glUniform() OpenGL ES manpage</a>
    */
   template<typename Array>
-  void uniform1iv(const UniformLocation &location, const Array *value) {
+  void uniform1iv(const UniformLocation &location, int count, const Array *value) {
     js_ << "ctx.uniform1iv(" << location << ",";
-    renderiv(js_, value, value + 1, INT);
+    renderiv(js_, value, value + count, INT);
     js_ << ");";
     GLDEBUG;
   }
@@ -1528,9 +1528,10 @@ public:
    * glUniform() OpenGL ES manpage</a>
    */
   template<typename Array>
-  void uniform2fv(const UniformLocation &location, const Array *value) {
+  void uniform2fv(const UniformLocation &location,int count, const Array *value) {
     js_ << "ctx.uniform2fv(" << location << ",";
-    renderfv(js_, value, value + 2);
+    // TODO: not tested!
+    renderfv(js_, value, value + 2*count);
     js_ << ");";
     GLDEBUG;
   }
@@ -1556,9 +1557,10 @@ public:
    * glUniform() OpenGL ES manpage</a>
    */
   template<typename Array>
-  void uniform2iv(const UniformLocation &location, const Array *value) {
+  void uniform2iv(const UniformLocation &location, int count, const Array *value) {
     js_ << "ctx.uniform2iv(" << location << ",";
-    renderiv(js_, value, value + 2, INT);
+    // TODO: not tested!
+    renderiv(js_, value, value + 2*count, INT);
     js_ << ");";
     GLDEBUG;
   }
@@ -1586,9 +1588,9 @@ public:
    * glUniform() OpenGL ES manpage</a>
    */
   template<typename Array>
-  void uniform3fv(const UniformLocation &location, const Array *value) {
+  void uniform3fv(const UniformLocation &location, int count, const Array *value) {
     js_ << "ctx.uniform3fv(" << location << ",";
-    renderfv(js_, value, value + 3);
+    renderfv(js_, value, value + 3*count);
     js_ << ");";
     GLDEBUG;
   }
@@ -1615,9 +1617,9 @@ public:
    * glUniform() OpenGL ES manpage</a>
    */
   template<typename Array>
-  void uniform3iv(const UniformLocation &location, const Array *value) {
+  void uniform3iv(const UniformLocation &location,int count, const Array *value) {
     js_ << "ctx.uniform3iv(" << location << ",";
-    renderiv(js_, value, value + 3, INT);
+    renderiv(js_, value, value + 3*count, INT);
     js_ << ");";
     GLDEBUG;
   }
@@ -1646,9 +1648,9 @@ public:
    * glUniform() OpenGL ES manpage</a>
    */
   template<typename Array>
-  void uniform4fv(const UniformLocation &location, const Array *value) {
+  void uniform4fv(const UniformLocation &location, int count, const Array *value) {
     js_ << "ctx.uniform4fv(" << location << ",";
-    renderfv(js_, value, value + 4);
+    renderfv(js_, value, value + 4*count);
     js_ << ");";
     GLDEBUG;
   }
@@ -1676,9 +1678,9 @@ public:
    * glUniform() OpenGL ES manpage</a>
    */
   template<typename Array>
-  void uniform4iv(const UniformLocation &location, const Array *value) {
+  void uniform4iv(const UniformLocation &location, int count, const Array *value) {
     js_ << "ctx.uniform4iv(" << location << ",";
-    renderiv(js_, value, value + 4, INT);
+    renderiv(js_, value, value + 4*count, INT);
     js_ << ");";
     GLDEBUG;
   }
