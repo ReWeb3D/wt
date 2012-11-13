@@ -954,6 +954,33 @@ void WGLWidget::copyTexSubImage2D(GLenum target, int level,
   GLDEBUG;
 }
 
+// TG: version that takes a binary buffer
+void WGLWidget::texSubImage2D(GLenum target, int level, unsigned xoffset, unsigned yoffset, 
+                   unsigned width, unsigned height, 
+                   GLenum format, GLenum type,
+                   BufferResource res, unsigned bufferResourceOffset, unsigned bufferResourceSize)
+{
+    //GLenum target, GLint level, GLint xoffset, GLint yoffset, GLsizei width, GLsizei height, GLenum format, GLenum type, ArrayBufferView? pixels
+    js_ << "ctx.texSubImage2D(" << toString(target) << "," << level <<"," << xoffset << "," << yoffset << ",";
+    js_ << width << "," << height << "," << toString(format) << "," << toString(type) << ",";
+    js_ << res << ".data.slice("<< bufferResourceOffset <<","<<bufferResourceOffset + bufferResourceSize << ")";
+    js_ << ");";
+    GLDEBUG;
+}
+
+
+// TG: version that takes another texture
+void WGLWidget::texSubImage2D(GLenum target, int level, unsigned xoffset, unsigned yoffset, 
+                              GLenum format, GLenum type,
+                              Texture texture)
+{
+    //GLenum target, GLint level, GLint xoffset, GLint yoffset, GLsizei width, GLsizei height, GLenum format, GLenum type, ArrayBufferView? pixels
+    js_ << "ctx.texSubImage2D(" << toString(target) << "," << level <<"," << xoffset << "," << yoffset << ",";
+    js_ << toString(format) << "," << toString(type) << ",";
+    js_ << texture << ".image);";
+    GLDEBUG;
+}
+
 WGLWidget::Buffer WGLWidget::createBuffer()
 {
   Buffer retval = "ctx.WtBuffer" + boost::lexical_cast<std::string>(buffers_++);

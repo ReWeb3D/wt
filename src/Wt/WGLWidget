@@ -1441,6 +1441,18 @@ public:
    */
   void texParameteri(GLenum target, GLenum pname, GLenum param);
 
+  // TG: version that takes a binary buffer
+  void texSubImage2D(GLenum target, int level, unsigned xoffset, unsigned yoffset, 
+                     unsigned width, unsigned height, 
+                     GLenum format, GLenum type,
+                     BufferResource res, unsigned bufferResourceOffset, unsigned bufferResourceSize);
+
+  // TG: version that takes another texture
+    void texSubImage2D(GLenum target, int level, unsigned xoffset, unsigned yoffset, 
+                     GLenum format, GLenum type,
+                     Texture texture);
+// TG: TODO: version that takes WImage
+
   //void texSubImage2D(GLenum target, GLint level, GLint xoffset, GLint yoffset, 
   //                   GLsizei width, GLsizei height, 
   //                   GLenum format, GLenum type, ArrayBufferView pixels);
@@ -2096,7 +2108,7 @@ protected:
   void getDomChanges(std::vector<DomElement *>& result, WApplication *app);
   void updateDom(DomElement &element, bool all);
 
-  void render(WFlags<RenderFlag> flags);
+  virtual void render(WFlags<RenderFlag> flags);
   std::string renderRemoveJs();
 
   // TG: access in derived classes
