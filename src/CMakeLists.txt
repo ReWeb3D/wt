@@ -362,7 +362,7 @@ TARGET_LINK_LIBRARIES(wt
 ADD_LIBRARY(wttest
   Wt/Test/WTestEnvironment.C
 )
-
+set_property(TARGET wttest PROPERTY FOLDER "Wt/core")
 TARGET_LINK_LIBRARIES(wttest wt ${BOOST_WT_LIBRARIES})
 INSTALL(TARGETS wttest
     RUNTIME DESTINATION bin
