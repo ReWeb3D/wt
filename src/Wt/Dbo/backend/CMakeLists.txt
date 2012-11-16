@@ -23,7 +23,8 @@ IF(ENABLE_SQLITE)
     Sqlite3.C
     ${Sqlite3_SRCS}
     )
-
+	set_property(TARGET wtdbosqlite3 PROPERTY FOLDER "Wt/core")
+  
   MESSAGE("** Wt::Dbo: building SQLite3 backend.")
 
   TARGET_LINK_LIBRARIES(wtdbosqlite3 wtdbo
@@ -78,6 +79,7 @@ IF(ENABLE_POSTGRES AND POSTGRES_FOUND)
   ADD_LIBRARY(wtdbopostgres
     Postgres.C
     )
+  set_property(TARGET wtdbopostgres PROPERTY FOLDER "Wt/core")
   TARGET_LINK_LIBRARIES(wtdbopostgres wtdbo ${POSTGRES_LIBRARIES} ${BOOST_DT_LIB})
 
   INCLUDE_DIRECTORIES(${POSTGRES_INCLUDE})
@@ -136,6 +138,7 @@ IF(ENABLE_FIREBIRD AND FIREBIRD_FOUND)
     Firebird.C
     ${IBPP_ALL_IN_ONE_FILE}
   )
+  set_property(TARGET wtdbofirebird PROPERTY FOLDER "Wt/core")
   TARGET_LINK_LIBRARIES(wtdbofirebird
     wtdbo
     ${FIREBIRD_LIBRARIES}

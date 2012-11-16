@@ -28,6 +28,8 @@ MACRO(WT_ADD_EXAMPLE name)
     ADD_EXECUTABLE(${ARGV})
   ENDIF(EXAMPLES_CONNECTOR MATCHES "wtisapi")
 
+  set_property(TARGET ${name} PROPERTY FOLDER "Wt/examples")
+  
   if(ANDROID)
     set(WT_ANDROID plaforms/android/wt-android)
     make_directory(${CMAKE_CURRENT_BINARY_DIR}/wt-android)

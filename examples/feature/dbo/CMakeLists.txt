@@ -10,28 +10,35 @@ SUBDIRS(
 
 ADD_EXECUTABLE(dbo-tutorial1  tutorial1.C)
 TARGET_LINK_LIBRARIES(dbo-tutorial1 ${tutorial_libs})
+set_property(TARGET dbo-tutorial1 PROPERTY FOLDER "Wt/tutorials")
 
 ADD_EXECUTABLE(dbo-tutorial2  tutorial2.C)
 TARGET_LINK_LIBRARIES(dbo-tutorial2 ${tutorial_libs})
+set_property(TARGET dbo-tutorial2 PROPERTY FOLDER "Wt/tutorials")
 
 ADD_EXECUTABLE(dbo-tutorial3  tutorial3.C)
 TARGET_LINK_LIBRARIES(dbo-tutorial3 ${tutorial_libs})
+set_property(TARGET dbo-tutorial3 PROPERTY FOLDER "Wt/tutorials")
 
 ADD_EXECUTABLE(dbo-tutorial4  tutorial4.C)
 TARGET_LINK_LIBRARIES(dbo-tutorial4 ${tutorial_libs})
+set_property(TARGET dbo-tutorial4 PROPERTY FOLDER "Wt/tutorials")
 
 ADD_EXECUTABLE(dbo-tutorial5  tutorial5.C)
 TARGET_LINK_LIBRARIES(dbo-tutorial5 ${tutorial_libs})
+set_property(TARGET dbo-tutorial5 PROPERTY FOLDER "Wt/tutorials")
 
 ADD_EXECUTABLE(dbo-tutorial6  tutorial6.C)
 TARGET_LINK_LIBRARIES(dbo-tutorial6 ${tutorial_libs})
+set_property(TARGET dbo-tutorial6 PROPERTY FOLDER "Wt/tutorials")
 
 ADD_EXECUTABLE(dbo-tutorial7  tutorial7.C)
 TARGET_LINK_LIBRARIES(dbo-tutorial7 ${tutorial_libs})
+set_property(TARGET dbo-tutorial7 PROPERTY FOLDER "Wt/tutorials")
 
 ADD_EXECUTABLE(dbo-tutorial8  tutorial8.C)
 TARGET_LINK_LIBRARIES(dbo-tutorial8 ${tutorial_libs})
-
+set_property(TARGET dbo-tutorial8 PROPERTY FOLDER "Wt/tutorials")
 INCLUDE_DIRECTORIES(${WT_SOURCE_DIR}/src)
 
 IF(INSTALL_EXAMPLES)

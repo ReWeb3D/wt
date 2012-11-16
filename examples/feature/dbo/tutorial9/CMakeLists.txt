@@ -5,7 +5,9 @@ SET(tutorial_libs wtdbo wtdbosqlite3)
 #ENDIF (MULTI_THREADED)
 
 ADD_EXECUTABLE(dbo-tutorial9 main.C Membership.C Organisation.C Person.C)
+
 TARGET_LINK_LIBRARIES(dbo-tutorial9 ${tutorial_libs})
+set_property(TARGET dbo-tutorial9 PROPERTY FOLDER "Wt/tutorials")
 
 INCLUDE_DIRECTORIES(${WT_SOURCE_DIR}/src)
 

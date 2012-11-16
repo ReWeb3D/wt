@@ -37,6 +37,8 @@ ADD_LIBRARY(wtext
   WWidgetItemImpl.C
 )
 
+set_property(TARGET wtext PROPERTY FOLDER "Wt/core")
+
 TARGET_LINK_LIBRARIES(wtext wt ${BOOST_WT_LIBRARIES})
 INSTALL(TARGETS wtext
     RUNTIME DESTINATION bin

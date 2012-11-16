@@ -17,6 +17,8 @@ ADD_LIBRARY(wtdbo
   WtSqlTraits.C
 )
 
+set_property(TARGET wtdbo PROPERTY FOLDER "Wt/core")
+
 IF(WIN32)
   #win32 links automatically against boost libs; specifying too much causes
   #trouble
