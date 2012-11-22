@@ -356,6 +356,7 @@ WGLWidget::WGLWidget(WContainerWidget *parent):
   framebuffers_(0),
   renderbuffers_(0),
   textures_(0),
+  images_(0),
   matrices_(0),
   webglNotAvailable_(this, "webglNotAvailable"),
   webGlNotAvailable_(false),
@@ -589,9 +590,8 @@ void WGLWidget::updateDom(DomElement &element, bool all)
                 //"o.preloadingTextures=false;"
                 "if(ctx == null) return;\n";
             for (unsigned i = 0; i < preloadImages_.size(); ++i) {
-                std::string texture = preloadImages_[i].first;
-                tmp << texture << "=ctx.createTexture();\n"
-                    << texture << ".image=images[" << i << "];\n";
+                std::string texImage = preloadImages_[i].first;
+                tmp << texImage << "=images[" << i << "];\n";
             }
             tmp << "o.preloadingTextures=false;\n";
 
@@ -627,7 +627,8 @@ void WGLWidget::updateDom(DomElement &element, bool all)
                 if (i != 0)
                     tmp << ',';
                 //preloadingStream << '\'' << resolveRelativeUrl(preloadBufferResources_[i].second) << '\'';
-                tmp << '\'' << Wt::WApplication::instance()->makeAbsoluteUrl(preloadBufferResources_[i].second) << '\'';
+                //tmp << '\'' << Wt::WApplication::instance()->makeAbsoluteUrl(preloadBufferResources_[i].second) << '\'';
+                tmp << '\'' << resolveRelativeUrl(preloadBufferResources_[i].second) << '\'';
                 
             }
             tmp <<
@@ -981,6 +982,24 @@ void WGLWidget::texSubImage2D(GLenum target, int level, unsigned xoffset, unsign
     GLDEBUG;
 }
 
+// TG: version that takes a url
+void WGLWidget::texSubImage2DFromURL(GLenum target, int level, unsigned xoffset, unsigned yoffset, 
+                              GLenum format, GLenum type,
+                              std::string url)
+{
+
+    // TG: prepare for preloading
+    std::string imgVariable = "ctx.WtTexImage" + boost::lexical_cast<std::string>(images_++);
+    preloadImages_.push_back(std::make_pair(imgVariable, url));
+
+    //GLenum target, GLint level, GLint xoffset, GLint yoffset, GLsizei width, GLsizei height, GLenum format, GLenum type, ArrayBufferView? pixels
+    js_ << "ctx.texSubImage2D(" << toString(target) << "," << level <<"," << xoffset << "," << yoffset << ",";
+    js_ << toString(format) << "," << toString(type) << ",";
+    js_ << imgVariable << ");";
+    GLDEBUG;
+}
+
+
 WGLWidget::Buffer WGLWidget::createBuffer()
 {
   Buffer retval = "ctx.WtBuffer" + boost::lexical_cast<std::string>(buffers_++);
@@ -1046,8 +1065,13 @@ WGLWidget::Texture WGLWidget::createTexture()
 
 WGLWidget::Texture WGLWidget::createTextureAndLoad(const std::string &url)
 {
-  Texture retval = "ctx.WtTexture" + boost::lexical_cast<std::string>(textures_++);
-  preloadImages_.push_back(std::make_pair(retval, url));
+  Texture retval = createTexture();
+  std::string imgVariable = "ctx.WtTexImage" + boost::lexical_cast<std::string>(images_++);
+
+  preloadImages_.push_back(std::make_pair(imgVariable, url));
+  
+  // TG: to support the old behavior
+  js_ << retval << ".image=" << imgVariable <<  ";";
   //GLDEBUG;
   return retval;
 
@@ -1372,6 +1396,22 @@ void WGLWidget::texImage2D(GLenum target, int level,
     << "," << texture << ".image);";
   GLDEBUG;
 }
+
+void WGLWidget::texImage2DFromURL(GLenum target, int level,
+                           GLenum internalformat,
+                           GLenum format, GLenum type,
+                           std::string url)
+{
+    // TG: prepare for preloading
+    std::string imgVariable = "ctx.WtTexImage" + boost::lexical_cast<std::string>(images_++);
+    preloadImages_.push_back(std::make_pair(imgVariable, url));
+
+    js_ << "ctx.texImage2D(" << toString(target) << "," << level << ","
+        << toString(internalformat) << "," << toString(format) << "," << toString(type)
+        << "," << imgVariable << ");";
+    GLDEBUG;
+}
+
 
 void WGLWidget::texParameteri(GLenum target,
                               GLenum pname,
