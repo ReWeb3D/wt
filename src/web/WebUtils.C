@@ -235,7 +235,12 @@ static inline char *generic_double_to_str(double d, char *buf)
 {
   if (!boost::math::isnan(d)) {
     if (!boost::math::isinf(d)) {
-      sprintf(buf, "%f", (float)d);
+      //sprintf(buf, "%f", (float)d);
+      // TG precision needs to be fixed, otherwise the buffer length will be overwritten
+      // if upstream changes to this are introduced to Wt, check if the buffer
+      // length is taken into account, otherwise there are crashes with 
+      // stack smashing detected (in linux, no boost::spirit support enabled)
+      sprintf(buf, "%.12e", (float)d);
     } else {
       if (d > 0) {
         sprintf(buf, "Infinity");
